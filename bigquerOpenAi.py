@@ -31,8 +31,6 @@ def query_result(client,QUERY:str)->None:
 # V3
 from google.oauth2 import service_account
 credentials = service_account.Credentials.from_service_account_file(key_path)
-# print(credentials.project_id)
-# engine = create_engine('bigquery://', credentials_info=credentials)
 
 # V4
 SQLALCHEMY_SILENCE_UBER_WARNING=1
@@ -47,8 +45,6 @@ query_result(client,QUERY)
 # SQL ALCHEMY
 metadata = MetaData()
 table = Table('<dataset>>.<table>', metadata)
-# TEST BIGQUERY ALCHEMY
-# print(select([func.count('*')], from_obj=table).scalar())
 
 # LLM BIGQUERY SQLALCHEMY
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=key_path
@@ -61,7 +57,7 @@ load_dotenv(dotenv_path=dotenv_path)
 
 db = SQLDatabase.from_uri('bigquery://')
 llm = OpenAI(temperature=0)  #OpenAI
-db_chain = SQLDatabaseChain(llm=OpenAI(), database=db)
+db_chain = SQLDatabaseChain.from_llm(llm=OpenAI(), database=db)
 # print(db_chain)
 print(db_chain.run({"query" :"<your question>" }))
 # db_chain.run("How many cogs are there?")
