@@ -36,7 +36,7 @@ credentials = service_account.Credentials.from_service_account_file(key_path)
 
 # V4
 SQLALCHEMY_SILENCE_UBER_WARNING=1
-engine = create_engine('bigquery://<projectname>',credentials_path=key_path)
+engine = create_engine('bigquery://',credentials_path=key_path)
 conn = engine.connect()
 # print(conn)
 
@@ -59,7 +59,7 @@ dotenv_path = Path('<path>/.env')
 load_dotenv(dotenv_path=dotenv_path)
 
 
-db = SQLDatabase.from_uri('bigquery://<project>')
+db = SQLDatabase.from_uri('bigquery://')
 llm = OpenAI(temperature=0)  #OpenAI
 db_chain = SQLDatabaseChain(llm=OpenAI(), database=db)
 # print(db_chain)
