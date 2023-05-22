@@ -9,9 +9,9 @@ Welcome to BigQuery LLM and SQLAlchemy project which uses LLMs to democratize ac
 ## :thinking: How it works:
 you can ask any question on your data in natural language, while in the backend a SQL is being generated and natural language is returned. 
 
-##still in development
+##version:
 
-
+lang chain 0.0176 is working only with sqlalchemy >= 1.4
 
 in sqlalchemy_bigquery modification need to be done based on the code shared:
 https://support.teradata.com/community?id=community_question&sys_id=ffd453e0dbc3e810e91893b5b996193d
