@@ -1,0 +1,24 @@
+[project]
+name = "llmbigquery"
+version = "2.0.0"
+description = "Ask BigQuery questions in plain English. Claude writes the SQL; guardrails and an eval harness keep it honest."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Yosi Navaro" }]
+requires-python = ">=3.10"
+dependencies = [
+  "anthropic>=0.40",
+  "google-cloud-bigquery>=3.20",
+  "sqlglot>=25",
+  "pyyaml>=6",
+  "python-dotenv>=1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+llmbigquery = "llmbigquery.cli:main"
+
+[tool.setuptools]
+packages = ["llmbigquery"]

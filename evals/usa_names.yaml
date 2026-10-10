@@ -1,0 +1,86 @@
+# Gold questions over the free public dataset `bigquery-public-data.usa_names`.
+# Table usa_1910_current(state, gender, year, name, number): babies per name/state/year.
+# Each gold_sql is the reference answer; the agent's result must return the same data.
+# `ordered: true` means row order is part of the answer.
+dataset: bigquery-public-data.usa_names
+cases:
+  - id: total_births_2000
+    question: How many babies in total are recorded for the year 2000?
+    gold_sql: |
+      SELECT SUM(number) FROM `bigquery-public-data.usa_names.usa_1910_current` WHERE year = 2000
+
+  - id: distinct_states
+    question: How many distinct states appear in the data?
+    gold_sql: |
+      SELECT COUNT(DISTINCT state) FROM `bigquery-public-data.usa_names.usa_1910_current`
+
+  - id: top_girl_name_2010
+    question: What was the most common girl's name in 2010 across all states?
+    gold_sql: |
+      SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current`
+      WHERE year = 2010 AND gender = 'F'
+      GROUP BY name ORDER BY SUM(number) DESC LIMIT 1
+
+  - id: top5_boy_names_1990
+    question: List the 5 most common boy names in 1990, most popular first.
+    ordered: true
+    gold_sql: |
+      SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current`
+      WHERE year = 1990 AND gender = 'M'
+      GROUP BY name ORDER BY SUM(number) DESC LIMIT 5
+
+  - id: noah_peak_year
+    question: In which year were the most boys named Noah?
+    gold_sql: |
+      SELECT year FROM `bigquery-public-data.usa_names.usa_1910_current`
+      WHERE name = 'Noah' AND gender = 'M'
+      GROUP BY year ORDER BY SUM(number) DESC LIMIT 1
+
+  - id: ca_births_1950
+    question: How many babies were recorded in California in 1950?
+    gold_sql: |
+      SELECT SUM(number) FROM `bigquery-public-data.usa_names.usa_1910_current`
+      WHERE state = 'CA' AND year = 1950
+
+  - id: emma_by_decade
+    question: How many girls were named Emma in each decade since 1980? Show decade and total, oldest first.
+    ordered: true
+    gold_sql: |
+      SELECT DIV(year, 10) * 10 AS decade, SUM(number) AS total
+      FROM `bigquery-public-data.usa_names.usa_1910_current`
+      WHERE name = 'Emma' AND gender = 'F' AND year >= 1980
+      GROUP BY decade ORDER BY decade
+
+  - id: state_most_births_2015
+    question: Which state had the most recorded births in 2015?
+    gold_sql: |
+      SELECT state FROM `bigquery-public-data.usa_names.usa_1910_current`
+      WHERE year = 2015 GROUP BY state ORDER BY SUM(number) DESC LIMIT 1
+
+  - id: unisex_names_2020
+    question: How many distinct names were given to both boys and girls in 2020?
+    gold_sql: |
+      SELECT COUNT(*) FROM (
+        SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current`
+        WHERE year = 2020 GROUP BY name HAVING COUNT(DISTINCT gender) = 2
+      )
+
+  - id: female_share_1960
+    question: What fraction of all recorded babies in 1960 were girls? Round to 3 decimals.
+    gold_sql: |
+      SELECT ROUND(SUM(IF(gender = 'F', number, 0)) / SUM(number), 3)
+      FROM `bigquery-public-data.usa_names.usa_1910_current` WHERE year = 1960
+
+  - id: first_year_liam
+    question: What is the first year in which the boy's name Liam appears?
+    gold_sql: |
+      SELECT MIN(year) FROM `bigquery-public-data.usa_names.usa_1910_current`
+      WHERE name = 'Liam' AND gender = 'M'
+
+  - id: ny_top3_girls_2005
+    question: What were the top 3 girl names in New York in 2005, most popular first?
+    ordered: true
+    gold_sql: |
+      SELECT name FROM `bigquery-public-data.usa_names.usa_1910_current`
+      WHERE state = 'NY' AND year = 2005 AND gender = 'F'
+      GROUP BY name ORDER BY SUM(number) DESC LIMIT 3
